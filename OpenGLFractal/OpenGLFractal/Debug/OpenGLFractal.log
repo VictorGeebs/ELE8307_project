@@ -1,0 +1,17 @@
+﻿  Fractal.cpp
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\VGA.h(47,17): warning C4244: 'argument': conversion from 'unsigned int' to 'GLfloat', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\VGA.h(47,14): warning C4244: 'argument': conversion from 'unsigned int' to 'GLfloat', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(171,19): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(172,19): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(181,21): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(182,21): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(211,25): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(213,25): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(216,25): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(218,25): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(221,21): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(223,21): warning C4244: 'initializing': conversion from 'double' to '__int64', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(352,39): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(352,29): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\Fractal.cpp(352,19): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  OpenGLFractal.vcxproj -> C:\Users\VictorGeebs-Desktop\Documents\Ecole\H22\ELE8307\Projet\OpenGLFractal-H2022\OpenGLFractal\Debug\OpenGLFractal.exe
