@@ -1,6 +1,31 @@
 #include "VGA.h"
 #include "io.h"
 
+void VGA::ci_Set_Pixel_Color(int n, unsigned int dataa, unsigned int datab)
+{
+	int start = 1;		// Not really used, just for simulation purpose in C/C++
+	int valid = 0;		// Not really used, just for simulation purpose in C/C++
+	static unsigned int* pixels;
+	static unsigned int* colors;
+	static unsigned int* MAR;
+	static unsigned int MDATA_IN;
+	static unsigned int MDATA_OUT;
+	static unsigned int WR;
+	
+	static int i;
+	static int length;
+	static unsigned int curr_color;
+
+INIT:   if (start == 0) { valid = 0; goto INIT; }
+else { valid = 0; pixels = (unsigned int*)dataa; colors = (unsigned int*)datab; MAR = (unsigned int*)datab; WR = 0; i = 0; length = 480;  goto S1; }
+
+S1:     if (i < length) { curr_color = MDATA_IN; MAR = pixels + i; WR = 1; i++; goto S2; }
+	else { valid = 1;}
+
+S2:     if (1) { MDATA_OUT = curr_color; MAR = colors + i; WR = 0; goto S1; }
+
+}
+
 //-------------------------------------------------------------------------
 void VGA::clr() {
 	int x, y;

@@ -60,6 +60,8 @@ public:
 		Set_Pixel_Color(x, y, 192);
 	}
 
+	void ci_Set_Pixel_Color(int n, unsigned int dataa, unsigned int datab);
+
 	inline void send_to_display() {
 #ifndef USE_OPEN_GL
 		IOWR(system_base_address,0,memory_address);

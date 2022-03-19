@@ -208,18 +208,19 @@ void draw_fractal(VGA& vga) {
 	double conv_fixed_precision = (1LL << fixed_precision);
 
 	double xLoopOffX = offset * cosAngle / Scale;
-	long long fp_xLoopOffX = (xLoopOffX * (1LL << fixed_precision));
 	double xLoopOffY = -offset * sinAngle / Scale;
-	long long fp_xLoopOffY = (xLoopOffY * (1LL << fixed_precision));
 
 	double yLoopOffX = -640 * (offset * cosAngle) / Scale + offset * sinAngle / Scale;
-	long long fp_yLoopOffX = (yLoopOffX * (1LL << fixed_precision));
 	double yLoopOffY = 640 * (offset * sinAngle) / Scale + offset * cosAngle / Scale;
-	long long fp_yLoopOffY = (yLoopOffY * (1LL << fixed_precision));
 
 	double currX = X_position - (ratio * cosAngle + sinAngle) / Scale;
-	long long fp_currX = (currX * (1LL << fixed_precision));
 	double currY = Y_position + (ratio * sinAngle - cosAngle) / Scale;
+	
+    long long fp_xLoopOffX = (xLoopOffX * (1LL << fixed_precision));
+	long long fp_xLoopOffY = (xLoopOffY * (1LL << fixed_precision));
+	long long fp_yLoopOffX = (yLoopOffX * (1LL << fixed_precision));
+	long long fp_yLoopOffY = (yLoopOffY * (1LL << fixed_precision));
+	long long fp_currX = (currX * (1LL << fixed_precision));
 	long long fp_currY = (currY * (1LL << fixed_precision));
 
 	for (y = 0; y < 480; y++) {

@@ -1,11 +1,1 @@
-﻿  draw.cpp
-C:\data\RemotePoly\ELE8307-H2022\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\VGA.h(7,10): fatal error C1083: Impossible d'ouvrir le fichier include : 'system.h' : No such file or directory
-  Fractal.cpp
-C:\data\RemotePoly\ELE8307-H2022\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\VGA.h(7,10): fatal error C1083: Impossible d'ouvrir le fichier include : 'system.h' : No such file or directory
-  my_very_long_int.cpp
-C:\data\RemotePoly\ELE8307-H2022\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\my_very_long_int.cpp(98,15): warning C4244: 'initialisation' : conversion de 'double' en '__int64', perte possible de données
-  OpenGLFractal.cpp
-C:\data\RemotePoly\ELE8307-H2022\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\OpenGLFractal.cpp(5,10): fatal error C1083: Impossible d'ouvrir le fichier include : 'altera_avalon_pio_regs.h' : No such file or directory
-  VGA.cpp
-C:\data\RemotePoly\ELE8307-H2022\OpenGLFractal-H2022\OpenGLFractal\OpenGLFractal\VGA.h(7,10): fatal error C1083: Impossible d'ouvrir le fichier include : 'system.h' : No such file or directory
-  Génération de code en cours...
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.Cpp.Platform.targets(67,5): error MSB8020: The build tools for v142 (Platform Toolset = 'v142') cannot be found. To build using the v142 build tools, please install v142 build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".
