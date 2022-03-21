@@ -1,5 +1,6 @@
 #include "Fractal.h"
 #include "my_very_long_int.h"
+#include "math_constants.h"
 #include "stdio.h"
 
 #ifndef USE_OPEN_GL
@@ -19,7 +20,17 @@ double R_Ball[NB_BALL];
 
 int found_pearl, time_ms;
 
+long long x_ball_fxp[NB_BALL];
+long long y_ball_fxp[NB_BALL];
+long long r_ball_fxp[NB_BALL];
 
+void initPreCalculation() {
+	for (int i = 0; i < NB_BALL; ++i) {
+		x_ball_fxp[i] = X_Ball[i] * (1LL << fixed_precision);
+		y_ball_fxp[i] = Y_Ball[i] * (1LL << fixed_precision);
+		r_ball_fxp[i] = R_Ball[i] * (1LL << fixed_precision);
+	}
+}
 
 /********************************************************************/
 int get_color(int level) {
@@ -120,7 +131,7 @@ int Get_Fractal_Level(double newRe, double newIm) {
 #endif
 
 #ifdef FIXED_POINT64
-#define fixed_precision 49
+//#define fixed_precision 49
 //********************************************************************************************************
 // Source : https://www.codeproject.com/Tips/618570/UInt-Multiplication-Squaring 
 //********************************************************************************************************
@@ -167,20 +178,16 @@ long long my_multiply_shift(long long a, long long b, int shift_value) {
 	return result;
 }
 
-int Get_Fractal_Level(double newRe, double newIm) {
-	long long fp_cRe = (cRe * (1LL << fixed_precision));
-	long long fp_cIm = (cIm * (1LL << fixed_precision));
-	long long fp_4 = (4 * (1LL << fixed_precision));
-	double conv_fixed_precision = (1LL << fixed_precision);
+const long long fp_cRe = (cRe * (1LL << fixed_precision));
+const long long fp_cIm = (cIm * (1LL << fixed_precision));
+const long long fp_4 = (4 * (1LL << fixed_precision));
+const long long conv_fixed_precision = (1LL << fixed_precision);
+
+int Get_Fractal_Level(long long fp_newRe, long long fp_newim) {
+	//long long fp_newRe = (newRe * conv_fixed_precision);
+	//long long fp_newim = (newIm * conv_fixed_precision);
 
 	int i;
-
-	//DEBUG
-	//printf("\nlong ");
-
-	long long fp_newRe = (newRe * conv_fixed_precision);
-	long long fp_newim = (newIm * conv_fixed_precision);
-
 	for (i = 0; i < 64; i++) {
 		long long fp_oldRe = fp_newRe;
 		long long fp_oldIm = fp_newim;
@@ -191,11 +198,6 @@ int Get_Fractal_Level(double newRe, double newIm) {
 
 		fp_newRe = fp_sqRe - fp_sqIm; fp_newRe += fp_cRe;
 		fp_newim = my_multiply_shift(fp_oldRe, fp_oldIm, fixed_precision - 1); fp_newim += fp_cIm;
-
-		//DEBUG
-		//newRe=new_re; newRe/=conv_fixed_precision;
-		//newIm=new_im; newIm/=conv_fixed_precision;
-		//printf("(%f,%f)",newRe,newIm);
 	}
 	return i;
 }
@@ -205,21 +207,23 @@ void draw_fractal(VGA& vga) {
 
 	double offset = 1.0 / 240.0;
 	double ratio = 320 / 240.0;
-	double conv_fixed_precision = (1LL << fixed_precision);
+	//double conv_fixed_precision = (1LL << fixed_precision);
 
 	double xLoopOffX = offset * cosAngle / Scale;
 	double xLoopOffY = -offset * sinAngle / Scale;
-
+	
 	double yLoopOffX = -640 * (offset * cosAngle) / Scale + offset * sinAngle / Scale;
 	double yLoopOffY = 640 * (offset * sinAngle) / Scale + offset * cosAngle / Scale;
-
+	
 	double currX = X_position - (ratio * cosAngle + sinAngle) / Scale;
 	double currY = Y_position + (ratio * sinAngle - cosAngle) / Scale;
-	
-    long long fp_xLoopOffX = (xLoopOffX * (1LL << fixed_precision));
+
+	long long fp_xLoopOffX = (xLoopOffX * (1LL << fixed_precision));
 	long long fp_xLoopOffY = (xLoopOffY * (1LL << fixed_precision));
+
 	long long fp_yLoopOffX = (yLoopOffX * (1LL << fixed_precision));
 	long long fp_yLoopOffY = (yLoopOffY * (1LL << fixed_precision));
+
 	long long fp_currX = (currX * (1LL << fixed_precision));
 	long long fp_currY = (currY * (1LL << fixed_precision));
 
@@ -227,9 +231,9 @@ void draw_fractal(VGA& vga) {
 		for (x = 0; x < 640; x++) {
 			if ((x == 320) || (y == 240)) vga.Set_Pixel_Color(x, y, 31);
 			else {
-				currX = fp_currX / conv_fixed_precision;
-				currY = fp_currY / conv_fixed_precision;
-				int level = Get_Fractal_Level(currX, currY);
+				//long long x_fp = fp_currX >> fixed_precision;
+				//long long y_fp = fp_currY >> fixed_precision;
+				int level = Get_Fractal_Level(fp_currX, fp_currY);
 				vga.Set_Pixel_Color(x, y, get_color(level));
 			}
 			fp_currX += fp_xLoopOffX;
@@ -320,37 +324,50 @@ void draw_fractal(VGA& vga) {
 
 /********************************************************************/
 void draw_balls(VGA& vga) {
-	int i;
-	for (i = 0; i < NB_BALL; i++) {
-		if (R_Ball[i] == 0) continue;	// the pearl has already been found
-		double screen_X = X_Ball[i];
-		double screen_Y = Y_Ball[i];
+	const int ang = round(80 * Angle / PI);
+	const long long scale_fxp = Scale * (1LL << fixed_precision);
+	const long long xPos_fxp = X_position * (1LL << fixed_precision);
+	const long long yPos_fxp = Y_position * (1LL << fixed_precision);
+	const long long cos_fxp = cosAngle * (1LL << fixed_precision);
+	const long long sin_fxp = sinAngle * (1LL << fixed_precision);
 
-		screen_X -= X_position;
-		screen_Y -= Y_position;
-		screen_X *= Scale;
-		screen_Y *= Scale;
+	for (int i = 0; i < NB_BALL; i++) {
+		if (r_ball_fxp[i] == 0) continue;	// the pearl has already been found
+		const long long x_fxp = my_multiply_shift(x_ball_fxp[i] - xPos_fxp, scale_fxp, fixed_precision);
+		const long long y_fxp = my_multiply_shift(y_ball_fxp[i] - yPos_fxp, scale_fxp, fixed_precision);
+		const long long r_fxp = my_multiply_shift(r_ball_fxp[i], scale_fxp, fixed_precision);
 
-		double screen_Radius = R_Ball[i] * Scale;
-		if ((screen_X * screen_X + screen_Y * screen_Y <= screen_Radius * screen_Radius)) {
+		const long long sqX_fxp = my_multiply_shift(x_fxp, x_fxp, fixed_precision);
+		const long long sqY_fxp = my_multiply_shift(y_fxp, y_fxp, fixed_precision);
+		const long long sqR_fxp = my_multiply_shift(r_fxp, r_fxp, fixed_precision);
+
+		if ((sqX_fxp + sqY_fxp <= sqR_fxp)) {
 			//La perle est trouvee
+			r_ball_fxp[i] = 0;
 			R_Ball[i] = 0;
 			int time = get_time();
 			printf("Found %i pearl(s) at time %i\n", ++found_pearl, time);
 		}
 
-		double tmp_X = screen_X;
-		double tmp_Y = screen_Y;
-		screen_X = (tmp_X * cosAngle - tmp_Y * sinAngle) * 240 + 320;
-		screen_Y = (tmp_X * sinAngle + tmp_Y * cosAngle) * 240 + 240;
-		screen_Radius *= 240;
+		const long long i1 = my_multiply_shift(x_fxp, cos_fxp, fixed_precision);
+		const long long i2 = my_multiply_shift(y_fxp, sin_fxp, fixed_precision);
+		const long long j1 = my_multiply_shift(x_fxp, sin_fxp, fixed_precision);
+		const long long j2 = my_multiply_shift(y_fxp, cos_fxp, fixed_precision);
 
-		if (screen_X + screen_Radius < 0) continue;
-		if (screen_X - screen_Radius >= 640) continue;
-		if (screen_Y + screen_Radius < 0) continue;
-		if (screen_Y - screen_Radius >= 480) continue;
+		const long long xi = i1 - i2;
+		const long long yi = j1 + j2;
+		const long long ri = r_fxp;
 
-		drawBall3D(vga, screen_X, screen_Y, screen_Radius, i % 7);
+		const int x_map = int((xi - (xi >> 4)) >> (fixed_precision - 8)) + 320; // int x_map = int(((xi << 8) - (xi << 4)) >> fixed_precision) + 320;
+		const int y_map = int((yi - (yi >> 4)) >> (fixed_precision - 8)) + 240; // int y_map = int(((yi << 8) - (yi << 4)) >> fixed_precision) + 240;
+		const int r_map = int((ri - (ri >> 4)) >> (fixed_precision - 8));       // int r_map = int(((ri << 8) - (ri << 4)) >> fixed_precision);      
+
+		if (x_map + r_map < 0) continue;
+		if (x_map - r_map >= 640) continue;
+		if (y_map + r_map < 0) continue;
+		if (y_map - r_map >= 480) continue;
+
+		drawBall3D(vga, x_map, y_map, r_map, i % 7);
 	}
 #ifdef USE_OPEN_GL
 	glFlush();

@@ -52,6 +52,29 @@ public:
 #endif
 	}
 
+	inline void CI_Set_Pixel_Color(int n, unsigned int dataa, unsigned int datab) {
+		int start = 1;		// Not really used, just for simulation purpose in C/C++
+		int valid = 0;		// Not really used, just for simulation purpose in C/C++
+		static unsigned int* colors; 	//idem
+		static unsigned int* pixels; 	//idem
+		static unsigned int* MAR; 		//idem
+		static unsigned int WR;
+		static unsigned int MDATA;
+		static int length; 				//idem
+		static int i;					//idem
+
+		INIT:   if (start == 0) { valid = 0; goto INIT; }
+		else { valid = 0; colors = (unsigned int*)dataa; pixels = (unsigned int*)datab; length = 480;  i = 0;
+			   MAR = (unsigned int*)dataa; WR = 0; goto S1;
+		}
+
+	S1:     if (i < length) { MAR = pixels + i; WR = 1; i++; goto S2; }
+		else { valid = 1;}
+
+		S2:     if (1) { MAR = colors + i; WR = 0; goto S1; }
+
+	}
+
 	inline void Set_Pixel(unsigned int x, unsigned int y) {
 		Set_Pixel_Color(x, y, 255);
 	}
@@ -59,8 +82,6 @@ public:
 	inline void Clr_Pixel(unsigned int x, unsigned int y) {
 		Set_Pixel_Color(x, y, 192);
 	}
-
-	void ci_Set_Pixel_Color(int n, unsigned int dataa, unsigned int datab);
 
 	inline void send_to_display() {
 #ifndef USE_OPEN_GL

@@ -10,9 +10,13 @@
 #define FIXED_POINT64
 //#define MY_VERY_LONG_INT
 
+#ifdef FIXED_POINT64
+#define fixed_precision 49
+#endif
+
 #define NB_BALL 10
 
-extern double conv_fixed_precision;
+//extern double conv_fixed_precision;
 
 extern double X_position, Y_position, Angle, Scale;
 extern double sinAngle;
@@ -23,6 +27,8 @@ extern double Y_Ball[];
 extern double R_Ball[];
 
 extern int found_pearl, time_ms;
+
+void initPreCalculation();
 
 int get_time();
 void draw_fractal(VGA& vga);

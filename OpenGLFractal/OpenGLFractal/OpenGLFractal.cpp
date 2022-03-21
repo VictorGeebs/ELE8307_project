@@ -67,6 +67,8 @@ void init() {
 	Scale = 1;
 	Speed = 2.0/VGA_HEIGHT*2;
 	time_ms = get_time();
+
+	initPreCalculation();
 	printf("Init done\n");
 }
 
