@@ -1,6 +1,8 @@
 #include "VGA.h"
 #include "io.h"
 
+int set_pixel_clk_cycles = 0;
+
 //-------------------------------------------------------------------------
 void VGA::clr() {
 	int x, y;
@@ -50,4 +52,35 @@ void VGA::ecran2d_setColorOpenGL(int color) {
 		break;
 	}
 #endif
+}
+
+void VGA::CI_Set_Pixel_Color(int n, unsigned int* dataa, unsigned int* datab) {
+	int start = 1;		// Not really used, just for simulation purpose in C/C++
+	int valid = 0;		// Not really used, just for simulation purpose in C/C++
+	static unsigned int* colors;
+	static unsigned int* pixels;
+	static unsigned int* MAR;
+	static unsigned int WR;
+	static unsigned int MDATA;
+	static int length;
+	static int i;
+	int y;
+	int x;
+
+	INIT:   if (start == 0) { valid = 0; goto INIT; }
+	else {
+		valid = 0; colors = dataa; pixels = datab; length = 640;  i = 0;
+		MAR = (unsigned int*)dataa; WR = 0; set_pixel_clk_cycles++; y = n; goto S1;
+	}
+
+	S1:     if (i < length) {
+	MAR = pixels + i; WR = 1; x = pixels[i]; ecran2d_setColorOpenGL(colors[i]);
+	glBegin(GL_POINTS); glVertex2f(x, y); glEnd(); i++; set_pixel_clk_cycles++; goto S2;
+	}
+	else {
+		valid = 1; return;
+}
+
+S2:     if (1) { MAR = colors + i; WR = 0; set_pixel_clk_cycles++; goto S1; }
+
 }

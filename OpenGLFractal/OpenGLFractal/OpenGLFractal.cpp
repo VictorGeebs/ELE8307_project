@@ -117,7 +117,7 @@ void iterate() {
 	if (current_VGA == &display1) current_VGA = &display2;
 	else  current_VGA = &display1;
 #endif
-
+	printf("Pixel_Clk_Cylces %i\n", set_pixel_clk_cycles);
 	printf("Step %i\n", step++);
 }
 

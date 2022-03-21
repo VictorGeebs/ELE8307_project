@@ -227,17 +227,31 @@ void draw_fractal(VGA& vga) {
 	long long fp_currX = (currX * (1LL << fixed_precision));
 	long long fp_currY = (currY * (1LL << fixed_precision));
 
+	const int unroll_size = 640;
+	unsigned int vLevels[unroll_size];
+	unsigned int pixelAddr[unroll_size];
+
 	for (y = 0; y < 480; y++) {
-		for (x = 0; x < 640; x++) {
-			if ((x == 320) || (y == 240)) vga.Set_Pixel_Color(x, y, 31);
-			else {
-				//long long x_fp = fp_currX >> fixed_precision;
-				//long long y_fp = fp_currY >> fixed_precision;
-				int level = Get_Fractal_Level(fp_currX, fp_currY);
-				vga.Set_Pixel_Color(x, y, get_color(level));
+		for (x = 0; x < 640/unroll_size; x++) {
+			for (int i = 0; i < unroll_size; i++)
+			{
+				int x_coord = unroll_size * x + i;
+				if ((x_coord == 320) || (y == 240)) {
+					vLevels[i] = 31;
+					pixelAddr[i] = x_coord;
+				}
+				else {
+					//long long x_fp = fp_currX >> fixed_precision;
+					//long long y_fp = fp_currY >> fixed_precision;
+					int level = Get_Fractal_Level(fp_currX, fp_currY);
+					vLevels[i] = get_color(level);
+					pixelAddr[i] = x_coord;
+					//vga.Set_Pixel_Color(x_coord, y, get_color(level));
+				}
+				fp_currX += fp_xLoopOffX;
+				fp_currY += fp_xLoopOffY;
 			}
-			fp_currX += fp_xLoopOffX;
-			fp_currY += fp_xLoopOffY;
+			vga.CI_Set_Pixel_Color(y, vLevels, pixelAddr);
 		}
 		fp_currX += fp_yLoopOffX;
 		fp_currY += fp_yLoopOffY;
