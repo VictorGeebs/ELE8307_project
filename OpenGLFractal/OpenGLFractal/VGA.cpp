@@ -1,8 +1,6 @@
 #include "VGA.h"
 #include "io.h"
 
-int set_pixel_clk_cycles = 0;
-
 //-------------------------------------------------------------------------
 void VGA::clr() {
 	int x, y;
