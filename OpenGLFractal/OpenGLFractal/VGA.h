@@ -26,8 +26,6 @@
 #define VGA_TOP 0
 #define VGA_BOT (VGA_HEIGHT - 1)
 
-extern int set_pixel_clk_cycles;
-
 //-------------------------------------------------------------------------
 class VGA {
 	int system_base_address;
