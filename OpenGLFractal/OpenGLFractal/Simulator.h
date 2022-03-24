@@ -7,8 +7,7 @@
 enum FunctionType : int {
 	SET_PIXEL = 0,
 	GET_FRACTAL_LEVEL_VECTOR,
-	GET_FRACTAL_STEP,
-	MULT_14_49,
+	PARALLEL_MULTIPLY,
 	OTHER
 };
 
@@ -25,6 +24,8 @@ public:
 	static void printClock(FunctionType type);
 	static void printAll();
 	static void printTotal();
+
+	static void printStatistics();
 
 private:
 	static std::map<int, unsigned long long> m;
