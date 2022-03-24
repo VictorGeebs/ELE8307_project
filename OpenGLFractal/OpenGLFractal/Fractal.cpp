@@ -375,7 +375,7 @@ void Get_Fractal_Level_Vector_ASM(unsigned int* dataa, unsigned int* datab)
             }
             else { *outBaseAddr = newLevel[0]; outBaseAddr++;/*MAR = outBaseAddr; MDATA_IN = newLevel[0];*/ rd = 0; wr = 1; c = 1; clk_cycles++; goto S4; }
 
-    S4:     if (c < count) { *outBaseAddr = newLevel[c]; outBaseAddr++; /*MAR += 4; MDATA_IN = newLevel[c];*/ rd = 0; wr = 1; c++; clk_cycles++; goto S4; }
+    S4:     if (c < count) { *outBaseAddr = newLevel[c]; outBaseAddr++; /*MAR += 4; MDATA_IN = newLevel[c];*/ rd = 0; wr = 1; c++; clk_cycles+=2; goto S4; }
             else { valid = 1; clk_cycles++; /*goto INIT;*/ Simulator::addClock(FunctionType::GET_FRACTAL_LEVEL_VECTOR, clk_cycles); return; }
 }
 
@@ -516,7 +516,7 @@ void parallel_multiply(unsigned int* dataa, unsigned int* datab)
             }
 
     S4:     if (i < len) { *outBaseAddr = outArray[i]; outBaseAddr++; /*MAR += 8; MDATA_IN = outArray[i];*/ rd = 0; wr = 1; i++; clk_cycles += 2; goto S4; }
-            else { valid = 1; clk_cycles++; /*goto INIT;*/ Simulator::addClock(FunctionType::GET_FRACTAL_LEVEL_VECTOR, clk_cycles); return; }
+            else { valid = 1; clk_cycles++; /*goto INIT;*/ Simulator::addClock(FunctionType::PARALLEL_MULTIPLY, clk_cycles); return; }
 }
 
 void draw_balls(VGA& vga) {
@@ -587,7 +587,7 @@ void draw_balls(VGA& vga) {
         drawBall3D(vga, x_map, y_map, r_map, i % 7);
     }
 
-    Simulator::printTotal();
+    Simulator::printStatistics();
 #ifdef USE_OPEN_GL
     glFlush();
 #endif
