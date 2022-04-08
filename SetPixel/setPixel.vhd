@@ -40,7 +40,7 @@ port(
 	signal clk_en: in std_logic;						-- Clock-qualifier (always required)
 		
 	-- signal N: in std_logic_vector(1 downto 0);			-- Selects which version of the instruction is required
-	signal N: in std_logic_vector(0 downto 0);			-- Selects which version of the instruction is required
+	--signal N: in std_logic_vector(0 downto 0);			-- Selects which version of the instruction is required
 	signal start: in std_logic;							-- Active high signal used to specify that inputs are valid (always required)
 	signal done: out std_logic;							-- Active high signal used to notify the CPU that result is valid (required for variable multi-cycle)
 	signal dataa: in std_logic_vector(31 downto 0);		-- Operand A (always required)
@@ -49,9 +49,9 @@ port(
 
 	-- Avalon Master
 	signal addr : out std_logic_vector(31 downto 0);
-    signal readdata : in std_logic_vector(7 downto 0);
+    signal readdata : in std_logic_vector(31 downto 0);
 	signal rd	: out std_logic;
-	signal writedata : out std_logic_vector(7 downto 0);
+	signal writedata : out std_logic_vector(31 downto 0);
 	signal wr 	: out std_logic;
 	signal busy : in std_logic
 
@@ -60,14 +60,18 @@ end entity setPixel;
 
 architecture a_custominstruction of setPixel is
 	-- local custom instruction signals
-	type t_etat is (init, s1,s2, init_busy, s1_busy, s2_busy); --Vous pouvez rajouter des etats ici.
+	type t_etat is (init, s1,s2, init_busy, s1_busy, s2_busy, level_to_color); --Vous pouvez rajouter des etats ici.
 	signal etat : t_etat;
 	signal color_addr_reg : std_logic_vector(31 downto 0);
 	signal vga_addr_reg : std_logic_vector(31 downto 0);
 	
-	shared variable color_value : unsigned(7 downto 0);
-    shared variable length : unsigned(31 downto 0);
+	shared variable color_value : unsigned(31 downto 0);
+    shared variable len : unsigned(31 downto 0);
     shared variable count : unsigned(31 downto 0);
+	shared variable color1 : unsigned(7 downto 0);
+	shared variable color2 : unsigned(7 downto 0);
+	shared variable color3 : unsigned(7 downto 0);
+	shared variable color4 : unsigned(7 downto 0);
 
 begin
 	process( clk, reset )
@@ -85,44 +89,53 @@ begin
                     if (start = '1') then
                         color_addr_reg <= dataa;
                         vga_addr_reg <= datab;
-                        length := 640; -- Change value to change vector length
-                        count := 0;
+                        len := x"00000280"; -- Change value to change vector length
+                        count := (OTHERS => '0');
                         
                         addr <= dataa; --std_logic_vector(color_addr_reg)
                         wr <= '0';
                         rd <= '1';                        
                         
-                        -- Change busy to save clock cycles
-                        if (busy = '0') then
-                            rd <= '0';
-                            etat <= s1;
-                        else
-                            etat <= init_busy;
-                        end if;
+						etat <= init_busy;
                     end if;
                 
                 when init_busy =>
                     done <= '0';
                     if (busy = '0') then
                         rd <= '0';
-                        etat <= s1;
+						color_value := unsigned(readdata);
+                        etat <= level_to_color;
                     end if;    
                 
+				when level_to_color =>
+					done <= '0';
+					color1 := color_value(7 downto 0);
+					color1 := shift_left(color1,2) and x"E0" + shift_right(color1,1);
+					color2 := color_value(15 downto 8);
+					color2 := shift_left(color2,2) and x"E0" + shift_right(color2,1);
+					color3 := color_value(23 downto 16);
+					color3 := shift_left(color3,2) and x"E0" + shift_right(color3,1);
+					color4 := color_value(31 downto 24);
+					color4 := shift_left(color4,2) and x"E0" + shift_right(color4,1);
+					color_value := color4 & color3 & color2 & color1;
+					etat <= s1;
+				
 				when s1 =>
 					done <= '0';
-                    if (count < length) then
+                    if (count < len) then
                         
                         addr <= vga_addr_reg;
+						writedata <= std_logic_vector(color_value);
                         wr <= '1';
                         rd <= '0';
                         
-                        count := count + 1;
-                        vga_addr_reg <= vga_addr_reg + 1;
-                        color_addr_reg <= color_addr_reg + 1;
+                        count := count + 4;
+                        vga_addr_reg <= vga_addr_reg + 4;
+                        color_addr_reg <= color_addr_reg + 4;
                         
                         etat <= s1_busy;
                     else
-                        valid <= '1';
+                        done <= '1';
                         wr <= '0';
                         rd <= '0';
                         etat <= init;
@@ -147,7 +160,8 @@ begin
                     done <= '0';
                     if (busy = '0') then
                         rd <= '0';
-                        etat <= s1;
+						color_value := unsigned(readdata);
+                        etat <= level_to_color;
                     end if; 
 			end case;
 			
